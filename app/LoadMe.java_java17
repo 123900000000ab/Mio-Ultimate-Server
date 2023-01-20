@@ -1,0 +1,266 @@
+package cosine.boat;
+
+import android.util.Log;
+
+import com.aof.mcinabox.gamecontroller.definitions.id.key.KeyEvent;
+import launcher.MioInfo;
+
+import java.io.File;
+import java.lang.ref.WeakReference;
+import java.util.Vector;
+
+public class LoadMe {
+    public final static String TAG = "LoadMe";
+
+    public static native int chdir(String str);
+
+    public static native int jliLaunch(String[] strArr);
+
+    public static native void redirectStdio(String file);
+
+    public static native void setenv(String str, String str2);
+
+    public static native void setupJLI();
+
+    public static native int dlopen(String name);
+
+    public static native void setLibraryPath(String path);
+
+    public static native void patchLinker();
+
+    public static WeakReference<LogReceiver> mReceiver;
+
+    static {
+        System.loadLibrary("boat");
+    }
+
+    public static void receiveLog(String str) {
+        if (mReceiver == null) {
+            Log.e(TAG, "LogReceiver is null. So use default receiver.");
+            mReceiver = new WeakReference<LogReceiver>(new LogReceiver() {
+                final StringBuilder builder = new StringBuilder();
+
+                @Override
+                public void pushLog(String log) {
+                    Log.e(TAG, log);
+                    builder.append(log);
+                }
+
+                @Override
+                public String getLogs() {
+                    return builder.toString();
+                }
+            });
+        } else {
+            mReceiver.get().pushLog(str);
+        }
+    }
+
+    public static int exec(LauncherConfig config) {
+        try {
+
+            MinecraftVersion mcVersion = MinecraftVersion.fromDirectory(new File(config.get("currentVersion")));
+
+            String runtimePath = "/data/data/launcher/app_runtime";
+
+
+            String home = config.get("currentVersion");
+
+
+            setenv("HOME", home);
+            setenv("JAVA_HOME", runtimePath + "/j2re-image");
+            //修复渲染
+            setenv("LIBGL_MIPMAP", "3");
+            setenv("LIBGL_NORMALIZE", "1");
+            //setenv("LIBGL_GL","21");
+            //添加版本判断
+            boolean isLwjgl3 = false;
+            if (mcVersion.minimumLauncherVersion >= 21) {
+                isLwjgl3 = true;
+            }
+            // openjdk
+            dlopen(runtimePath + "/j2re-image/lib/libfreetype.so");
+            dlopen(runtimePath + "/j2re-image/lib/libjli.so");
+            dlopen(runtimePath + "/j2re-image/lib/server/libjvm.so");
+            dlopen(runtimePath + "/j2re-image/lib/libverify.so");
+            dlopen(runtimePath + "/j2re-image/lib/libjava.so");
+            dlopen(runtimePath + "/j2re-image/lib/libnet.so");
+            dlopen(runtimePath + "/j2re-image/lib/libnio.so");
+            dlopen(runtimePath + "/j2re-image/lib/libawt.so");
+            dlopen(runtimePath + "/j2re-image/lib/libawt_headless.so");
+
+            String classPath;
+            String libraryPath;
+            dlopen(runtimePath + "/libopenal.so.1");
+            dlopen(runtimePath + "/libGL.so.1");
+//			dlopen(runtimePath + "/libgl4es_115.so");
+            //根据版本判断是否启用lwjgl3
+            if (!isLwjgl3) {
+                libraryPath = runtimePath + "/j2re-image/lib:" + runtimePath + "/j2re-image/lib/:" + runtimePath + "/lwjgl-2:" + runtimePath;
+
+                classPath = runtimePath + "/lwjgl-2/lwjgl.jar:" + runtimePath + "/lwjgl-2/lwjgl_util.jar:" + mcVersion.getClassPath(config);
+
+                dlopen(runtimePath + "/lwjgl-2/liblwjgl.so");
+            } else {
+                patchLinker();
+                libraryPath = runtimePath + "/j2re-image/lib/:" + runtimePath + "/j2re-image/lib/:" + runtimePath + "/lwjgl-3:" + runtimePath;
+
+                classPath = runtimePath + "/lwjgl-3/lwjgl-jemalloc.jar:" + runtimePath + "/lwjgl-3/lwjgl-tinyfd.jar:" + runtimePath + "/lwjgl-3/lwjgl-opengl.jar:" + runtimePath + "/lwjgl-3/lwjgl-openal.jar:" + runtimePath + "/lwjgl-3/lwjgl-glfw.jar:" + runtimePath + "/lwjgl-3/lwjgl-stb.jar:" + runtimePath + "/lwjgl-3/lwjgl.jar:" + mcVersion.getClassPath(config);
+                dlopen(runtimePath + "/libglfw.so");
+                dlopen(runtimePath + "/lwjgl-3/liblwjgl.so");
+                dlopen(runtimePath + "/lwjgl-3/liblwjgl_stb.so");
+                dlopen(runtimePath + "/lwjgl-3/liblwjgl_tinyfd.so");
+                dlopen(runtimePath + "/lwjgl-3/liblwjgl_opengl.so");
+            }
+            setupJLI();
+
+            redirectStdio(home + "/boat_output.txt");
+            chdir(home);
+
+
+            Vector<String> args = new Vector<String>();
+
+
+            args.add(runtimePath + "/j2re-image/bin/java");
+
+            String extraJavaFlags[] = config.get("extraJavaFlags").split(" ");
+            for (String flag : extraJavaFlags) {
+                args.add(flag);
+            }
+            //高版本修复启动forge闪退问题
+            if (isLwjgl3) {
+                args.add("-Dfml.earlyprogresswindow=false");
+            }
+            //java参数
+            args.add("-Djava.io.tmpdir=/data/data/launcher/cache");
+            //args.add("-Duser.home=null");
+            args.add("-Dminecraft.launcher.brand=MioPro");
+            args.add("-Dfml.ignoreInvalidMinecraftCertificates=true");
+            args.add("-Dfml.ignorePatchDiscrepancies=true");
+            args.add("-Djava.home=" + runtimePath + "/j2re-image");
+            args.add("-Djava.library.path=" + libraryPath);
+//			args.add("-Dglfwstub.windowWidth="+((BoatActivity)MyApplication.getCurrentActivity()).screenwidth);
+//			args.add("-Dglfwstub.windowHeight="+((BoatActivity)MyApplication.getCurrentActivity()).screenheight);
+            args.add("-cp");
+            args.add(classPath);
+
+            args.add(mcVersion.mainClass);
+            //mc参数
+            String minecraftArgs[] = null;
+            if (isLwjgl3) {
+                minecraftArgs = mcVersion.getMinecraftArguments(config, true);
+            } else {
+                minecraftArgs = mcVersion.getMinecraftArguments(config, false);
+            }
+
+            for (String flag : minecraftArgs) {
+                args.add(flag);
+            }
+            args.add("--width");
+            args.add(Integer.toString(((BoatActivity) MyApplication.getCurrentActivity()).screenwidth));
+//			//args.add("854");
+            args.add("--height");
+            args.add(Integer.toString(((BoatActivity) MyApplication.getCurrentActivity()).screenheight));
+//			//args.add("480");
+            //args.add("--fullscreen");
+            String extraMinecraftArgs[] = config.get("extraMinecraftFlags").split(" ");
+            for (String flag : extraMinecraftArgs) {
+                if (!flag.equals("")) {
+                    args.add(flag);
+                }
+            }
+            String 最终参数 = "";
+            String finalArgs[] = new String[args.size()];
+            for (int i = 0; i < args.size(); i++) {
+                if (!args.get(i).equals(" ")) {
+                    finalArgs[i] = args.get(i);
+                    最终参数 += finalArgs[i] + "\n";
+                    System.out.println("MC启动参数:" + finalArgs[i]);
+                }
+            }
+            //MioUtils.writeTxt(最终参数,"/sdcard/boat/参数.txt");
+
+            System.out.println("OpenJDK exited with code : " + jliLaunch(finalArgs));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return 1;
+        }
+        return 0;
+    }
+
+    public static void openInstaller() {
+		try {
+			String runtimePath = "/data/data/launcher/app_runtime";
+
+
+			setenv("HOME", MioInfo.DIR_MAIN);
+			setenv("JAVA_HOME", runtimePath + "/j2re-image");
+			//修复渲染
+			setenv("LIBGL_MIPMAP", "3");
+			setenv("LIBGL_NORMALIZE", "1");
+			//setenv("LIBGL_GL","21");
+
+			// openjdk
+			dlopen(runtimePath + "/j2re-image/lib/aarch64/libpng16.so");
+			dlopen(runtimePath + "/j2re-image/lib/aarch64/libfreetype.so");
+			dlopen(runtimePath + "/j2re-image/lib/aarch64/jli/libjli.so");
+			dlopen(runtimePath + "/j2re-image/lib/aarch64/server/libjvm.so");
+			dlopen(runtimePath + "/j2re-image/lib/aarch64/libverify.so");
+			dlopen(runtimePath + "/j2re-image/lib/aarch64/libjava.so");
+			dlopen(runtimePath + "/j2re-image/lib/aarch64/libnet.so");
+			dlopen(runtimePath + "/j2re-image/lib/aarch64/libnio.so");
+			dlopen(runtimePath + "/j2re-image/lib/aarch64/libawt.so");
+			dlopen(runtimePath + "/j2re-image/lib/aarch64/libawt_headless.so");
+
+			String libraryPath;
+
+			libraryPath = runtimePath + "/j2re-image/lib/aarch64/jli:" + runtimePath + "/j2re-image/lib/aarch64:" + runtimePath + "/lwjgl-2:" + runtimePath;
+
+			setupJLI();
+
+			redirectStdio(MioInfo.DIR_MAIN + "/boat_output.txt");
+			chdir(MioInfo.DIR_MAIN);
+
+
+			Vector<String> args = new Vector<String>();
+
+
+			args.add(runtimePath + "/j2re-image/bin/java");
+
+			//java参数
+			args.add("-Djava.io.tmpdir=/data/data/launcher/cache");
+			args.add("-Djava.home=" + runtimePath + "/j2re-image");
+			args.add("-Djava.library.path=" + libraryPath);
+			args.add("-Djava.awt.headless=false");
+			args.add("-Dcacio.managed.screensize=2248x1080");
+			args.add("-Dcacio.font.fontmanager=sun.awt.X11FontManager");
+			args.add("-Dcacio.font.fontscaler=sun.font.FreetypeFontScaler");
+			args.add("-Dswing.defaultlaf=javax.swing.plaf.metal.MetalLookAndFeel");
+			args.add("-Dawt.toolkit=net.java.openjdk.cacio.ctc.CTCToolkit");
+			args.add("-Djava.awt.graphicsenv=net.java.openjdk.cacio.ctc.CTCGraphicsEnvironment");
+			args.add("-Xbootclasspath/a:/storage/emulated/0/MioLauncher/caciocavallo/cacio-shared-1.10-SNAPSHOT.jar:/storage/emulated/0/MioLauncher/caciocavallo/ResConfHack.jar:/storage/emulated/0/MioLauncher/caciocavallo/cacio-androidnw-1.10-SNAPSHOT.jar");
+			args.add("-jar");
+			args.add("/storage/emulated/0/preview_OptiFine_1.16.5_HD_U_G8_pre9.jar");
+			String finalArgs[] = new String[args.size()];
+			for (int i = 0; i < args.size(); i++) {
+				if (!args.get(i).equals(" ")) {
+					finalArgs[i] = args.get(i);
+					Log.d("参数", finalArgs[i]);
+				}
+			}
+			System.out.println("OpenJDK exited with code : " + jliLaunch(finalArgs));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+    public interface LogReceiver {
+        void pushLog(String log);
+
+        String getLogs();
+    }
+}
+
+
+
+
+
