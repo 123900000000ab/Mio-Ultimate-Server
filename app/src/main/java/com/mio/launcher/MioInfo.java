@@ -1,29 +1,33 @@
 package com.mio.launcher;
 
+import android.content.Context;
 import android.os.Environment;
-import java.io.File;
 import cosine.boat.LauncherConfig;
 
 public class MioInfo {
     public static LauncherConfig config;
-    public static String DIR_MAIN = new File(Environment.getExternalStorageDirectory().getAbsolutePath(), "MioLauncher").getAbsolutePath();
-    public static String DIR_GAME = new File(DIR_MAIN, ".minecraft").getAbsolutePath();
-    public static String DIR_TEMP = new File(DIR_GAME,"temp").getAbsolutePath();
-    public static String DIR_ASSETS = new File(DIR_GAME,"assets").getAbsolutePath();
-    public static String DIR_OBJECTS = new File(DIR_ASSETS,"objects").getAbsolutePath();
-    public static String DIR_INDEXES = new File(DIR_ASSETS,"indexes").getAbsolutePath();
-    public static String DIR_VERSIONS = new File(DIR_GAME,"versions").getAbsolutePath();
-    public static String DIR_LIBRARIES = new File(DIR_GAME,"libraries").getAbsolutePath();
-    public static String DIR_GAMEDIR_JSON = new File(DIR_MAIN,"gamedir.json").getAbsolutePath();
-    public static String DIR_DATA = "/data/data/"+BuildConfig.APPLICATION_ID;
+    public static String DIR_MAIN = Environment.getExternalStorageDirectory() + "/MioLauncher";
+    public static String DIR_GAME = DIR_MAIN + "/.minecraft";
+    public static String DIR_TEMP = DIR_MAIN + "/temp";
+    public static String DIR_ASSETS = DIR_GAME + "/assets";
+    public static String DIR_OBJECTS = DIR_ASSETS + "/objects";
+    public static String DIR_INDEXES = DIR_ASSETS+ "/indexes";
+    public static String DIR_VERSIONS = DIR_GAME + "/versions";
+    public static String DIR_LIBRARIES = DIR_GAME + "/libraries";
+    public static String DIR_GAMEDIR_JSON = DIR_MAIN + "/gamedir.json";
+    public String DIR_DATA;
+    public MioInfo() {}
+    public MioInfo(Context context) {
+        DIR_DATA = context.getFilesDir().getAbsolutePath().replace("/files","");
+    }
     public static void setPath(String s){
-        DIR_MAIN = new File(s,"MioLauncher").getAbsolutePath();
-        DIR_GAME = new File(DIR_MAIN, ".minecraft").getAbsolutePath();
-        DIR_TEMP = new File(DIR_GAME,"temp").getAbsolutePath();
-        DIR_ASSETS = new File(DIR_GAME,"assets").getAbsolutePath();
-        DIR_OBJECTS = new File(DIR_ASSETS,"objects").getAbsolutePath();
-        DIR_INDEXES = new File(DIR_ASSETS,"indexes").getAbsolutePath();
-        DIR_VERSIONS = new File(DIR_GAME,"versions").getAbsolutePath();
-        DIR_LIBRARIES = new File(DIR_GAME,"libraries").getAbsolutePath();
+        DIR_MAIN = Environment.getExternalStorageDirectory() + "/MioLauncher";
+        DIR_GAME = DIR_MAIN + "/.minecraft";
+        DIR_TEMP = DIR_MAIN + "/temp";
+        DIR_ASSETS = DIR_GAME + "/assets";
+        DIR_OBJECTS = DIR_ASSETS + "/objects";
+        DIR_INDEXES = DIR_ASSETS+ "/indexes";
+        DIR_VERSIONS = DIR_GAME + "/versions";
+        DIR_LIBRARIES = DIR_GAME + "/libraries";
     }
 }

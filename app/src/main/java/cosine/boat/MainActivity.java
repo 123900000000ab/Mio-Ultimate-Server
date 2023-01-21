@@ -24,7 +24,7 @@ public class MainActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_command);
-        File home=new File(MioInfo.DIR_DATA,"files/home");
+        File home=new File(new MioInfo(MainActivity.this).DIR_DATA,"files/home");
         home.mkdirs();
         命令 = findViewById(R.id.activitymainEditText1);
         输出 = findViewById(R.id.activitymainEditText2);
