@@ -11,9 +11,12 @@ public class FolderPath {
     public static String gameDir_Private;
     //运行库解压后所在目录
     public static String runtimeDir_Internal;
+    //JRE8路径
+    public static String JRE8_Dir;
     public FolderPath() {}
     public FolderPath(Context context){
         gameDir_Private = context.getExternalFilesDir(".minecraft").getAbsolutePath();
         runtimeDir_Internal = context.getDir("runtime",Context.MODE_PRIVATE).getAbsolutePath();
+        JRE8_Dir = runtimeDir_Internal + "/j2re-image";
     }
 }
