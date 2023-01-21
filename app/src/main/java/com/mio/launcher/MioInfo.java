@@ -15,9 +15,8 @@ public class MioInfo {
     public static String DIR_VERSIONS = DIR_GAME + "/versions";
     public static String DIR_LIBRARIES = DIR_GAME + "/libraries";
     public static String DIR_GAMEDIR_JSON = DIR_MAIN + "/gamedir.json";
-    public String DIR_DATA;
-    public MioInfo() {}
-    public MioInfo(Context context) {
+    public static String DIR_DATA;
+    public static void initializeMioInfo (Context context){
         DIR_DATA = context.getFilesDir().getAbsolutePath().replace("/files","");
     }
     public static void setPath(String s){

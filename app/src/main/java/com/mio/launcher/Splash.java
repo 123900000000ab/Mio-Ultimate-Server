@@ -88,7 +88,8 @@ public class Splash extends Activity {
 	}
 	private void fileCheck(){
 		new Thread(()->{
-			File runtime= new File(new MioInfo(Splash.this).DIR_DATA,"app_runtime");
+			MioInfo.initializeMioInfo(Splash.this);
+			File runtime= new File(MioInfo.DIR_DATA,"app_runtime");
 			File config1= new File(MioInfo.DIR_MAIN,"MioConfig.json");
 			File profile= new File(MioInfo.DIR_GAME,"launcher_profiles.json");
 			File busybox=new File(runtime,"busybox");
