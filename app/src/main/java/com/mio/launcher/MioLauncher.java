@@ -156,8 +156,8 @@ public class MioLauncher extends AppCompatActivity implements OnClickListener {
         mshe = msh.edit();
         //初始化UI
         background = findViewById(R.id.activity_mainRelativeLayout);
-        if (new File(MioInfo.DIR_MAIN, "bg.png").exists()) {
-            Bitmap bitmap = BitmapFactory.decodeFile(new File(MioInfo.DIR_MAIN, "bg.png").getAbsolutePath());
+        if (new File(MioInfo.defaultMioLauncherDir_Public, "bg.png").exists()) {
+            Bitmap bitmap = BitmapFactory.decodeFile(new File(MioInfo.defaultMioLauncherDir_Public, "bg.png").getAbsolutePath());
             BitmapDrawable bd = new BitmapDrawable(bitmap);
             background.setBackground(bd);
         }
@@ -380,7 +380,7 @@ public class MioLauncher extends AppCompatActivity implements OnClickListener {
             menu.show();
         });
         if (MioInfo.config == null) {
-            MioInfo.config = LauncherConfig.fromFile(new File(MioInfo.DIR_MAIN, "MioConfig.json").getAbsolutePath());
+            MioInfo.config = LauncherConfig.fromFile(new File(MioInfo.defaultMioLauncherDir_Public, "MioConfig.json").getAbsolutePath());
         }
         if (!new File(MioInfo.config.get("currentVersion")).exists()) {
             versiontext.setText("未选择版本");
@@ -458,7 +458,7 @@ public class MioLauncher extends AppCompatActivity implements OnClickListener {
         layout_log_refresh.setOnClickListener(this);
         layout_log_edit = findViewById(R.id.layout_log_edit);
         new Thread(() -> {
-            String s = MioUtils.readTxt(new File(MioInfo.DIR_MAIN, "boat_output.txt").getAbsolutePath());
+            String s = MioUtils.readTxt(new File(MioInfo.defaultMioLauncherDir_Public, "boat_output.txt").getAbsolutePath());
             runOnUiThread(() -> layout_log_edit.setText(s.contains("错误") ? "无日志" : s));
         }).start();
         //启动器设置区域
@@ -1162,7 +1162,7 @@ public class MioLauncher extends AppCompatActivity implements OnClickListener {
             }).setNegativeButton("取消", null).create();
             dialog.show();
         } else if (v == layout_log_share) {
-            File file = new File(MioInfo.DIR_MAIN, "boat_output.txt");
+            File file = new File(MioInfo.defaultMioLauncherDir_Public, "boat_output.txt");
             if (null != file && file.exists()) {
                 Intent share = new Intent(Intent.ACTION_SEND);
                 //android7以上用FileProvider
@@ -1182,7 +1182,7 @@ public class MioLauncher extends AppCompatActivity implements OnClickListener {
 
         } else if (v == layout_log_refresh) {
             new Thread(() -> {
-                String s = MioUtils.readTxt(new File(MioInfo.DIR_MAIN, "boat_output.txt").getAbsolutePath());
+                String s = MioUtils.readTxt(new File(MioInfo.defaultMioLauncherDir_Public, "boat_output.txt").getAbsolutePath());
                 runOnUiThread(() -> layout_log_edit.setText(s.contains("错误") ? "无日志" : s));
             }).start();
         } else if (v == layout_settingButtonMouse) {
@@ -1605,13 +1605,13 @@ public class MioLauncher extends AppCompatActivity implements OnClickListener {
                             public void onClick(DialogInterface d, int which) {
                                 new Thread(() -> {
                                     try {
-//                                      FileUtils.moveDirectoryToDirectory(new File(gamedir,"assets"),new File(MioInfo.DIR_GAME),true);
-//                                      FileUtils.moveDirectoryToDirectory(new File(gamedir,"libraries"),new File(MioInfo.DIR_GAME),true);
-//                                      FileUtils.moveDirectoryToDirectory(new File(gamedir,"versions"),new File(MioInfo.DIR_GAME),true);
+//                                      FileUtils.moveDirectoryToDirectory(new File(gamedir,"assets"),new File(MioInfo.defaultGameDir_Public),true);
+//                                      FileUtils.moveDirectoryToDirectory(new File(gamedir,"libraries"),new File(MioInfo.defaultGameDir_Public),true);
+//                                      FileUtils.moveDirectoryToDirectory(new File(gamedir,"versions"),new File(MioInfo.defaultGameDir_Public),true);
 //                                      FileUtils.moveDirectory(gamedir,new File(MioInfo.DIR_VERSIONS,items[which]));
-                                        MioShell.doShell("cp -r -f " + new File(gamedir, "assets").getAbsolutePath() + " " + new File(MioInfo.DIR_GAME).getAbsolutePath());
-                                        MioShell.doShell("cp -r -f " + new File(gamedir, "libraries").getAbsolutePath() + " " + new File(MioInfo.DIR_GAME).getAbsolutePath());
-                                        MioShell.doShell("cp -r -f " + new File(gamedir, "versions").getAbsolutePath() + " " + new File(MioInfo.DIR_GAME).getAbsolutePath());
+                                        MioShell.doShell("cp -r -f " + new File(gamedir, "assets").getAbsolutePath() + " " + new File(MioInfo.defaultGameDir_Public).getAbsolutePath());
+                                        MioShell.doShell("cp -r -f " + new File(gamedir, "libraries").getAbsolutePath() + " " + new File(MioInfo.defaultGameDir_Public).getAbsolutePath());
+                                        MioShell.doShell("cp -r -f " + new File(gamedir, "versions").getAbsolutePath() + " " + new File(MioInfo.defaultGameDir_Public).getAbsolutePath());
                                         for (File s:gamedir.listFiles()){
                                             MioShell.doShell("cp -r -f " + s.getAbsolutePath() + " " + new File(MioInfo.DIR_VERSIONS, items[which]).getAbsolutePath());
                                         }

@@ -81,7 +81,7 @@ public class Splash extends Activity {
 		new File(MioInfo.DIR_OBJECTS).mkdirs();
 		new File(MioInfo.DIR_TEMP,"version_manifest.json");
 		try {
-			new File(MioInfo.DIR_MAIN,".nomedia").createNewFile();
+			new File(MioInfo.defaultMioLauncherDir_Public,".nomedia").createNewFile();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -90,8 +90,8 @@ public class Splash extends Activity {
 		new Thread(()->{
 			MioInfo.initializeMioInfo(Splash.this);
 			File runtime= new File(MioInfo.DIR_DATA,"app_runtime");
-			File config1= new File(MioInfo.DIR_MAIN,"MioConfig.json");
-			File profile= new File(MioInfo.DIR_GAME,"launcher_profiles.json");
+			File config1= new File(MioInfo.defaultMioLauncherDir_Public,"MioConfig.json");
+			File profile= new File(MioInfo.defaultGameDir_Public,"launcher_profiles.json");
 			File busybox=new File(runtime,"busybox");
 			File gamedir=new File(MioInfo.DIR_GAMEDIR_JSON);
 //			File caciacavallo=new File(MioInfo.DIR_DATA,"caciacavallo");

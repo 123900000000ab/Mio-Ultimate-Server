@@ -116,7 +116,7 @@ public class LoadMe {
             }
             setupJLI();
 
-            redirectStdio(new File(MioInfo.DIR_MAIN,"boat_output.txt").getAbsolutePath());
+            redirectStdio(new File(MioInfo.defaultMioLauncherDir_Public,"boat_output.txt").getAbsolutePath());
             chdir(home);
 
 
