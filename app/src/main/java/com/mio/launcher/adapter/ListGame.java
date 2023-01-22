@@ -61,7 +61,7 @@ public class ListGame extends BaseAdapter {
                         .setPositiveButton("确定", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dia, int which) {
-                                MioUtils.deleteFile(new File(MioInfo.DIR_VERSIONS,gamelist.get(position)).getAbsolutePath());
+                                MioUtils.DeleteFolder(new File(MioInfo.DIR_VERSIONS,gamelist.get(position)).getAbsolutePath());
                                 gamelist.remove(gamelist.get(position));
                                 ListGame.this.notifyDataSetChanged();
                             }

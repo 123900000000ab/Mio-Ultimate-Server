@@ -106,45 +106,71 @@ public class MioUtils
         //关闭输出流
         output.close();
     }
-    public static boolean deleteFile(String src) {
-        File fs=new File(src);
-        if (!fs.exists()) {
+    /**
+     * 删除单个文件
+     * @param   filePath    被删除文件的文件名
+     * @return 文件删除成功返回true，否则返回false
+    **/
+    public static boolean deleteFile(String filePath) {
+        File file = new File(filePath);
+        if (file.isFile() && file.exists()) {
+            return file.delete();
+        }
+        return false;
+    }
+
+    /**
+     * 删除文件夹以及目录下的文件
+     * @param   filePath 被删除目录的文件路径
+     * @return  目录删除成功返回true，否则返回false
+    **/
+    public static boolean deleteDirectory(String filePath) {
+        boolean flag = false;
+        //如果filePath不以文件分隔符结尾，自动添加文件分隔符
+        if (!filePath.endsWith(File.separator)) {
+            filePath = filePath + File.separator;
+        }
+        File dirFile = new File(filePath);
+        if (!dirFile.exists() || !dirFile.isDirectory()) {
             return false;
         }
-        if (fs.isDirectory()) {
-            for (File f:fs.listFiles()) {
-                deleteFile(f.getAbsolutePath());
+        flag = true;
+        File[] files = dirFile.listFiles();
+        //遍历删除文件夹下的所有文件(包括子目录)
+        for (int i = 0; i < files.length; i++) {
+            if (files[i].isFile()) {
+                //删除子文件
+                flag = deleteFile(files[i].getAbsolutePath());
+                if (!flag) break;
+            } else {
+                //删除子目录
+                flag = deleteDirectory(files[i].getAbsolutePath());
+                if (!flag) break;
             }
+        }
+        if (!flag) return false;
+        //删除当前空目录
+        return dirFile.delete();
+    }
+
+    /**
+     * 根据路径删除指定的目录或文件，无论存在与否
+     * @param filePath  要删除的目录或文件
+     * @return 删除成功返回 true，否则返回 false。
+    **/
+    public static boolean DeleteFolder(String filePath) {
+        File file = new File(filePath);
+        if (!file.exists()) {
+            return false;
         } else {
-            fs.delete();
-            return true;
-        }
-        fs.delete();
-        return true;
-	}
-	public static void deleteFolder(File file){
-        //判断文件不为null或文件目录存在
-        if (file == null || !file.exists()){
-            
-            System.out.println("文件删除失败,请检查文件路径是否正确");
-            return;
-        }
-        //取得这个目录下的所有子文件对象
-        File[] files = file.listFiles();
-        //遍历该目录下的文件对象
-        for (File f: files){
-            //打印文件名
-            String name = file.getName();
-            System.out.println(name);
-            //判断子目录是否存在子目录,如果是文件则删除
-            if (f.isDirectory()){
-                deleteFolder(f);
-            }else {
-                f.delete();
+            if (file.isFile()) {
+                // 为文件时调用删除文件方法
+                return deleteFile(filePath);
+            } else {
+                // 为目录时调用删除目录方法
+                return deleteDirectory(filePath);
             }
         }
-        //删除空文件夹  for循环已经把上一层节点的目录清空。
-        file.delete();
     }
     public static boolean dirCopy(String srcPath, String destPath) {
         File src = new File(srcPath);

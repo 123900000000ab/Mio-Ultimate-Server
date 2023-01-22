@@ -530,7 +530,7 @@ public class MioLauncher extends AppCompatActivity implements OnClickListener {
                         .setPositiveButton("确定", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dia, int which) {
-                                MioUtils.deleteFile(new File(MioLauncher.this.getApplicationContext().getFilesDir().getParent(), "/app_runtime").getAbsolutePath());
+                                MioUtils.DeleteFolder(new File(MioLauncher.this.getApplicationContext().getFilesDir().getParent(), "/app_runtime").getAbsolutePath());
                                 toast("已删除运行库，将进入导入界面，请再次导入运行库。");
 //								startActivity(new Intent(MioLauncher.this, Activity_Download.class));
                                 finish();
@@ -540,8 +540,8 @@ public class MioLauncher extends AppCompatActivity implements OnClickListener {
                         .setNeutralButton("删除运行库及其缓存文件", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface p1, int p2) {
-                                MioUtils.deleteFile(new File(MioLauncher.this.getApplicationContext().getFilesDir().getParent(), "/app_runtime").getAbsolutePath());
-                                MioUtils.deleteFile(new File(MioUtils.getExternalFilesDir(MioLauncher.this) + "/澪/runtime/mioruntimev4.zip").getAbsolutePath());
+                                MioUtils.DeleteFolder(new File(MioLauncher.this.getApplicationContext().getFilesDir().getParent(), "/app_runtime").getAbsolutePath());
+                                MioUtils.DeleteFolder(new File(MioUtils.getExternalFilesDir(MioLauncher.this) + "/澪/runtime/mioruntimev4.zip").getAbsolutePath());
                                 toast("已删除运行库及其缓存文件，将进入导入界面，请再次导入运行库。");
 //								startActivity(new Intent(MioLauncher.this, Activity_Download.class));
                                 finish();
