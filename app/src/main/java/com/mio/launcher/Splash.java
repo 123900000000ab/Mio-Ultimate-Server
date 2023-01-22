@@ -95,7 +95,7 @@ public class Splash extends Activity {
 			File busybox=new File(runtime,"busybox");
 			File gamedir=new File(MioInfo.DIR_GAMEDIR_JSON);
 //			File caciacavallo=new File(MioInfo.DIR_DATA,"caciacavallo");
-			if (!runtime.exists()){
+			if ((!new File(MioInfo.jre8Dir).exists()  || !new File(MioInfo.runtimeDir + "/version").exists())){
 				toast("正在安装运行库。");
 				MioUtils.copyAssetsFiles(Splash.this,"app_runtime",runtime.getAbsolutePath());
 				toast("安装完毕。");
