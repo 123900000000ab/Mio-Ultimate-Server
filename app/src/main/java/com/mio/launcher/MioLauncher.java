@@ -229,8 +229,8 @@ public class MioLauncher extends AppCompatActivity implements OnClickListener {
                 public void run() {
                     String str = "";
                     try {
-                        HttpURLConnection con = (HttpURLConnection) new URL("http://" + ip + "/Mio/tips.txt").openConnection();
-                        con.setConnectTimeout(5000);
+                        HttpURLConnection con = (HttpURLConnection) new URL("https://icraft.ren:90/titles/newMio.txt").openConnection();
+                        con.setConnectTimeout(10000);
                         InputStream in = con.getInputStream();
                         BufferedReader bfr = new BufferedReader(new InputStreamReader(in));
                         String temp = null;
@@ -255,8 +255,8 @@ public class MioLauncher extends AppCompatActivity implements OnClickListener {
                 @Override
                 public void run() {
                     try {
-                        HttpURLConnection con = (HttpURLConnection) new URL("http://" + ip + "/Mio/donation.txt").openConnection();
-                        con.setConnectTimeout(5000);
+                        HttpURLConnection con = (HttpURLConnection) new URL("https://icraft.ren:90/titles/zz.txt").openConnection();
+                        con.setConnectTimeout(10000);
                         InputStream in = con.getInputStream();
                         BufferedReader bfr = new BufferedReader(new InputStreamReader(in));
                         String temp = null;
@@ -1289,7 +1289,7 @@ public class MioLauncher extends AppCompatActivity implements OnClickListener {
                 @Override
                 public void run() {
                     try {
-                        HttpURLConnection con = (HttpURLConnection) new URL("http://" + ip + "/Mio/mio_version.txt").openConnection();
+                        HttpURLConnection con = (HttpURLConnection) new URL("https://icraft.ren:90/titles/launcherInfo.json").openConnection();
                         InputStream in = con.getInputStream();
                         BufferedReader bfr = new BufferedReader(new InputStreamReader(in));
                         String temp = null;
