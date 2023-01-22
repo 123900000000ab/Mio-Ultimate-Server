@@ -61,7 +61,7 @@ public class LoadMe {
 
             MinecraftVersion mcVersion = MinecraftVersion.fromDirectory(new File(config.get("currentVersion")));
 
-            String runtimePath = "/data/data/com.mio.launcher/app_runtime";
+            String runtimePath = MioInfo.runtimeDir;
             getAllLib(new File(runtimePath));
 
             String home = config.get("currentVersion");
