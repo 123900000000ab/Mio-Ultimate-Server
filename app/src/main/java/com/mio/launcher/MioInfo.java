@@ -6,6 +6,7 @@ import cosine.boat.LauncherConfig;
 
 public class MioInfo {
     public static LauncherConfig config;
+    //应用MioLauncher路径(公有目录)
     public static String defaultMioLauncherDir_Public = Environment.getExternalStorageDirectory() + "/MioLauncher";
     //默认游戏资源文件存放路径(公有目录)
     public static String defaultGameDir_Public = defaultMioLauncherDir_Public + "/.minecraft";
