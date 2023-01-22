@@ -18,8 +18,14 @@ public class MioInfo {
     public static String DIR_LIBRARIES = defaultGameDir_Public + "/libraries";
     public static String DIR_GAMEDIR_JSON = defaultMioLauncherDir_Public + "/gamedir.json";
     public static String DIR_DATA;
+    //运行库解压后所在目录
+    public static String runtimeDir;
+    //JRE8目录
+    public static String jre8Dir;
     public static void initializeMioInfo (Context context){
         DIR_DATA = context.getFilesDir().getAbsolutePath().replace("/files","");
+        runtimeDir = context.getDir("runtime",Context.MODE_PRIVATE).getAbsolutePath();
+        jre8Dir = runtimeDir + "/j2re-image";
     }
     public static void setPath(String s){
         defaultMioLauncherDir_Public = Environment.getExternalStorageDirectory() + "/MioLauncher";
