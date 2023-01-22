@@ -131,7 +131,6 @@ public class MioLauncher extends AppCompatActivity implements OnClickListener {
     //启动器设置区域
     Button layout_settingButtonMouse, layout_settingButtonBackground, layout_settingButtonFix, layout_settingButtonHelp, layout_settingButtonToCmd, layout_settingButtonChooseGif, layout_settingButtonChangeFbl;
     CheckBox layout_settingCheckBoxFull,layout_settingCheckBoxRender,layout_settingCheckBoxCaci;
-    Button layout_settingButtonUpdate;
     ImageView layout_settingImageViewDeleteRuntime;
     //关于
     Button layout_about_donate,layout_about_futureplan;
@@ -508,8 +507,6 @@ public class MioLauncher extends AppCompatActivity implements OnClickListener {
             }
         });
         layout_settingCheckBoxCaci.setChecked(new File("/data/data/com.mio.launcher/app_runtime/j2re-image", "8").exists());
-        layout_settingButtonUpdate = findViewById(R.id.layout_settingButtonUpdate);
-        layout_settingButtonUpdate.setOnClickListener(this);
         layout_settingButtonToCmd = findViewById(R.id.layout_settingButtonToCmd);
         layout_settingButtonToCmd.setOnClickListener(new OnClickListener() {
             @Override
@@ -1234,85 +1231,7 @@ public class MioLauncher extends AppCompatActivity implements OnClickListener {
                     .setNegativeButton("取消", null)
                     .create();
             dialog.show();
-        } else if (v == layout_settingButtonUpdate) {
-            final Handler up = new Handler() {
-                @Override
-                public void handleMessage(Message msg) {
-                    super.handleMessage(msg);
-                    if (msg.what == 0) {
-                        AlertDialog dialog = new AlertDialog.Builder(MioLauncher.this)
-                                .setTitle("更新")
-                                .setMessage((String) msg.obj)
-                                .setPositiveButton("确定", new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dia, int which) {
-
-                                    }
-                                })
-                                .setNegativeButton("取消", null)
-                                .create();
-                        dialog.show();
-                    } else if (msg.what == 1) {
-                        if (Integer.valueOf((String) msg.obj) > version) {
-                            if (!new File(MioUtils.getExternalFilesDir(MioLauncher.this), "/澪/update").exists()) {
-                                new File(MioUtils.getExternalFilesDir(MioLauncher.this), "/澪/update").mkdirs();
-                            }
-                            AlertDialog dialog_up = new AlertDialog.Builder(MioLauncher.this)
-                                    .setTitle("更新")
-                                    .setMessage("检测到新版本，是否更新？")
-                                    .setPositiveButton("是", new DialogInterface.OnClickListener() {
-                                        @Override
-                                        public void onClick(DialogInterface dia, int which) {
-                                            View vi = LayoutInflater.from(MioLauncher.this).inflate(R.layout.alert_update, null);
-                                            TextView progressText = vi.findViewById(R.id.alertupdateTextView);
-                                            AlertDialog dialog = new AlertDialog.Builder(MioLauncher.this)
-                                                    .setTitle("更新")
-                                                    .setView(vi)
-                                                    .create();
-                                            dialog.setCanceledOnTouchOutside(false);
-                                            dialog.show();
-
-                                        }
-                                    }).setNegativeButton("取消", null)
-                                    .create();
-                            dialog_up.show();
-
-                        } else {
-                            Toast.makeText(MioLauncher.this, "当前已是最新版本。", Toast.LENGTH_LONG).show();
-                        }
-
-                    }
-
-                }
-            };
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    try {
-                        HttpURLConnection con = (HttpURLConnection) new URL("https://icraft.ren:90/titles/launcherInfo.json").openConnection();
-                        InputStream in = con.getInputStream();
-                        BufferedReader bfr = new BufferedReader(new InputStreamReader(in));
-                        String temp = null;
-                        String str = "";
-                        while ((temp = bfr.readLine()) != null) {
-                            str += temp;
-                        }
-                        bfr.close();
-                        in.close();
-                        con.disconnect();
-                        Message msg = new Message();
-                        msg.obj = str;
-                        msg.what = 1;
-                        up.sendMessage(msg);
-                    } catch (IOException e) {
-                        Message msg = new Message();
-                        msg.what = 0;
-                        msg.obj = "版本获取出错:" + e.toString();
-                        up.sendMessage(msg);
-                    }
-                }
-            }).start();
-        } else if (v == layout_settingButtonChooseGif) {
+        }else if (v == layout_settingButtonChooseGif) {
             String[] items = {"重置", "选择"};
             AlertDialog dialog = new AlertDialog.Builder(this).setItems(items, new DialogInterface.OnClickListener() {
                 @Override
