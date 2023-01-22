@@ -3,7 +3,6 @@ package cosine.boat;
 import android.util.ArrayMap;
 import android.util.Log;
 import com.mio.launcher.MioInfo;
-import com.mio.launcher.MioUtils;
 import java.io.File;
 import java.lang.ref.WeakReference;
 import java.util.Map;
