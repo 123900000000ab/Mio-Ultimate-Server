@@ -67,32 +67,32 @@ public class MioUtils {
     public static String getExternalFilesDir(Context context){
         return context.getExternalFilesDir(null).getParentFile().getAbsolutePath();
     }
-    public static void copyFromAssets(Context context, String source,
-                                      String destination) throws IOException {
-        /**
-         * 获取assets目录下文件的输入流
-         *
-         * 1、获取AssetsManager : 调用 Context 上下文对象的 context.getAssets() 即可获取 AssetsManager对象;
-         * 2、获取输入流 : 调用 AssetsManager 的 open(String fileName) 即可获取对应文件名的输入流;
-         */
-        InputStream is = context.getAssets().open(source);
-        // 获取文件大小
-        int size = is.available();
-        // 创建文件的缓冲区
-        byte[] buffer = new byte[size];
-        // 将文件读取到缓冲区中
-        is.read(buffer);
-        // 关闭输入流
-        is.close();
-        /*
-         *  打开app安装目录文件的输出流
-         *  Context.MODE_PRIVATE  设置该文件只能被本应用使用，为私有数据
-         */
-        FileOutputStream output = new FileOutputStream(destination);
-        // 将文件从缓冲区中写出到内存中
-        output.write(buffer);
-        //关闭输出流
-        output.close();
+    public static void copyFilesFromAssets(Context context, String assetsPath, String savePath){
+        try {
+            String[] fileNames = context.getAssets().list(assetsPath);// 获取assets目录下的所有文件及目录名
+            if (fileNames.length > 0) {// 如果是目录
+                File file = new File(savePath);
+                file.mkdirs();// 如果文件夹不存在，则递归
+                for (String fileName : fileNames) {
+                    copyFilesFromAssets(context, assetsPath + "/" + fileName, savePath + "/" + fileName);
+                }
+            } else {// 如果是文件
+                InputStream is = context.getAssets().open(assetsPath);
+                FileOutputStream fos = new FileOutputStream(new File(savePath));
+                byte[] buffer = new byte[1024];
+                int byteCount = 0;
+                while ((byteCount = is.read(buffer)) != -1) {// 循环从输入流读取
+                    // buffer字节
+                    fos.write(buffer, 0, byteCount);// 将读取的输入流写入到输出流
+                }
+                fos.flush();// 刷新缓冲区
+                is.close();
+                fos.close();
+            }
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
     }
     /**
      * 删除单个文件
@@ -281,64 +281,6 @@ public class MioUtils {
     public static String parseLibNameToPath(String libName){
         String[] tmp=libName.split(":");
         return tmp[0].replace(".","/")+"/"+tmp[1]+"/"+tmp[2]+"/"+tmp[1]+"-"+tmp[2]+".jar";
-    }
-
-    /**
-     * 复制assets目录下所有文件及文件夹到指定路径
-     * @param  mActivity 上下文
-     * @param  mAssetsPath Assets目录的相对路径
-     * @param  mSavePath 复制文件的保存路径
-     * @return void
-     */
-    public static boolean copyAssetsFiles(android.app.Activity mActivity,java.lang.String mAssetsPath,java.lang.String mSavePath) {
-        try {
-            // 获取assets目录下的所有文件及目录名
-            java.lang.String[] fileNames=mActivity.getResources().getAssets().list(mAssetsPath);
-            if(fileNames.length>0) {
-                // 若是目录
-                for(java.lang.String fileName:fileNames) {
-                    java.lang.String newAssetsPath="";
-                    // 确保Assets路径后面没有斜杠分隔符，否则将获取不到值
-                    if((mAssetsPath==null)||"".equals(mAssetsPath)||"/".equals(mAssetsPath)) {
-                        newAssetsPath=fileName;
-                    }
-                    else {
-                        if(mAssetsPath.endsWith("/")) {
-                            newAssetsPath=mAssetsPath+fileName;
-                        }
-                        else {
-                            newAssetsPath=mAssetsPath+"/"+fileName;
-                        }
-                    }
-                    // 递归调用
-                    copyAssetsFiles(mActivity,newAssetsPath,mSavePath+"/"+fileName);
-                }
-            }
-            else {
-                // 若是文件
-                java.io.File file=new java.io.File(mSavePath);
-                // 若文件夹不存在，则递归创建父目录
-                file.getParentFile().mkdirs();
-                java.io.InputStream is=mActivity.getResources().getAssets().open(mAssetsPath);
-                java.io.FileOutputStream fos=new java.io.FileOutputStream(new java.io.File(mSavePath));
-                byte[] buffer=new byte[1024];
-                int byteCount=0;
-                // 循环从输入流读取字节
-                while((byteCount=is.read(buffer))!=-1) {
-                    // 将读取的输入流写入到输出流
-                    fos.write(buffer,0,byteCount);
-                }
-                // 刷新缓冲区
-                fos.flush();
-                fos.close();
-                is.close();
-            }
-        }
-        catch(java.lang.Exception e) {
-            Log.e("assets复制错误",e.toString());
-            return false;
-        }
-        return true;
     }
     public static String getFileSha1(String path) {
 

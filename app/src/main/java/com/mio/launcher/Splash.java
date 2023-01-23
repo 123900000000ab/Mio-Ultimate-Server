@@ -92,33 +92,21 @@ public class Splash extends Activity {
 //			File caciacavallo=new File(MioInfo.DIR_DATA,"caciacavallo");
 			if ((!new File(MioInfo.jre8Dir).exists()  || !new File(MioInfo.runtimeDir + "/version").exists())){
 				toast("正在安装运行库。");
-				MioUtils.copyAssetsFiles(Splash.this,"app_runtime",runtime.getAbsolutePath());
+				MioUtils.copyFilesFromAssets(Splash.this,"app_runtime",runtime.getAbsolutePath());
 				toast("安装完毕。");
 			}
 			if(!busybox.exists()){
-				MioUtils.copyAssetsFiles(Splash.this,"app_runtime/busybox",busybox.getAbsolutePath());
+				MioUtils.copyFilesFromAssets(Splash.this,"app_runtime/busybox",busybox.getAbsolutePath());
 				busybox.setExecutable(true);
 			}
 			if (!gamedir.exists()){
-				try {
-					MioUtils.copyFromAssets(Splash.this,gamedir.getName(),gamedir.getAbsolutePath());
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
+				MioUtils.copyFilesFromAssets(Splash.this,"gamedir.json",gamedir.getAbsolutePath());
 			}
 			if (!config1.exists()){
-				try {
-					MioUtils.copyFromAssets(Splash.this,config1.getName(),config1.getAbsolutePath());
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
+				MioUtils.copyFilesFromAssets(Splash.this,"MioConfig.json",config1.getAbsolutePath());
 			}
 			if (!profile.exists()){
-				try {
-					MioUtils.copyFromAssets(Splash.this,profile.getName(),profile.getAbsolutePath());
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
+				MioUtils.copyFilesFromAssets(Splash.this,"launcher_profiles.json",profile.getAbsolutePath());
 			}
 			MioInfo.config=LauncherConfig.fromFile(config1.getAbsolutePath());
 			try {

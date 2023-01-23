@@ -30,6 +30,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import pl.droidsonroids.gif.GifDrawable;
 import pl.droidsonroids.gif.GifImageView;
+
+import com.mio.launcher.R;
 import com.mio.mclauncher.customcontrol.*;
 import android.view.ViewGroup;
 
@@ -406,18 +408,10 @@ public class BoatActivity extends Activity implements TextureView.SurfaceTexture
         File key=new File(MioInfo.config.get("currentVersion"),"Miokey.json");
         File options=new File(MioInfo.config.get("currentVersion"),"options.txt");
         if (!key.exists()){
-            try {
-                MioUtils.copyFromAssets(this,key.getName(),key.getAbsolutePath());
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            MioUtils.copyFilesFromAssets(this,key.getName(),key.getAbsolutePath());
         }
         if (!options.exists()){
-            try {
-                MioUtils.copyFromAssets(this,options.getName(),options.getAbsolutePath());
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            MioUtils.copyFilesFromAssets(this,options.getName(),options.getAbsolutePath());
         }
         mMioCustomManager=new MioCustomManager();
         mMioCustomManager.初始化(this,overlay, new File(MioInfo.config.get("currentVersion")).getAbsolutePath());
@@ -665,106 +659,79 @@ public class BoatActivity extends Activity implements TextureView.SurfaceTexture
 			public void onClick(View p1) {
 				if(p1==custom){
                     CharSequence[] items = {"进入自定义按键模式","重置按键"};
-                    AlertDialog dialog = new AlertDialog.Builder(BoatActivity.this)
-                            .setItems(items, new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dia, int which) {
-                                    switch (which){
-                                        case 0:
-                                            mMioCustomManager.自定义开关();
-                                            mioCrossingKeyboard.自定义();
-                                            break;
-                                        case 1:
-                                            mMioCustomManager.清除按键();
-                                            try {
-                                                File key=new File(MioInfo.config.get("currentVersion"),"Miokey.json");
-                                                MioUtils.copyFromAssets(BoatActivity.this,key.getName(),key.getAbsolutePath());
-                                            } catch (IOException e) {
-                                                e.printStackTrace();
+                    AlertDialog dialog = new AlertDialog.Builder(BoatActivity.this).setItems(items, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dia, int which) {
+                            switch (which){
+                                case 0:
+                                    mMioCustomManager.自定义开关();
+                                    mioCrossingKeyboard.自定义();
+                                    break;
+                                    case 1:
+                                        mMioCustomManager.清除按键();
+                                        File key=new File(MioInfo.config.get("currentVersion"),"Miokey.json");
+                                        MioUtils.copyFilesFromAssets(BoatActivity.this,key.getName(),key.getAbsolutePath());
+                                        mMioCustomManager=null;
+                                        mMioCustomManager=new MioCustomManager();
+                                        mMioCustomManager.初始化(BoatActivity.this,overlay, new File(MioInfo.config.get("currentVersion")).getAbsolutePath());
+                                        mMioCustomManager.设置自定义按键回调(new MioCustomManager.自定义按键回调(){
+                                            @Override
+                                            public void 命令接收事件(String 命令) {
+                                                input(命令);
                                             }
-                                            mMioCustomManager=null;
-                                            mMioCustomManager=new MioCustomManager();
-                                            mMioCustomManager.初始化(BoatActivity.this,overlay, new File(MioInfo.config.get("currentVersion")).getAbsolutePath());
-                                            mMioCustomManager.设置自定义按键回调(new MioCustomManager.自定义按键回调(){
-
-                                                @Override
-                                                public void 命令接收事件(String 命令) {
-                                                    input(命令);
-                                                }
-
-                                                @Override
-                                                public void 键值接收事件(int 键值, boolean 按下) {
-                                                    BoatInput.setKey(键值, 0,按下);
-                                                }
-
-                                                @Override
-                                                public void 控制鼠标指针移动事件(int x, int y) {
-                                                    baseX+=x;
-                                                    baseY+=y;
-                                                    BoatInput.setPointer(baseX, baseY);
-                                                    mouseCursor.setX(baseX);
-                                                    mouseCursor.setY(baseY);
-
-                                                }
-
-                                                @Override
-                                                public void 按下() {
-//                                                    屏幕控制_按下=true;
-                                                }
-
-                                                @Override
-                                                public void 抬起() {
-//                                                    屏幕控制_按下=false;
-                                                }
-
-                                                @Override
-                                                public void 鼠标回调(int 键值, boolean 按下) {
-                                                    BoatInput.setMouseButton(键值,按下);
-                                                }
-                                            });
-                                            break;
+                                            @Override
+                                            public void 键值接收事件(int 键值, boolean 按下) {
+                                                BoatInput.setKey(键值, 0,按下);
+                                            }
+                                            @Override
+                                            public void 控制鼠标指针移动事件(int x, int y) {
+                                                baseX+=x;
+                                                baseY+=y;
+                                                BoatInput.setPointer(baseX, baseY);
+                                                mouseCursor.setX(baseX);
+                                                mouseCursor.setY(baseY);
+                                            }
+                                            @Override
+                                            public void 按下() {
+//                                              屏幕控制_按下=true;
+                                            }
+                                            @Override
+                                            public void 抬起() {
+//                                              屏幕控制_按下=false;
+                                            }
+                                            @Override
+                                            public void 鼠标回调(int 键值, boolean 按下) {
+                                                BoatInput.setMouseButton(键值,按下);
+                                            }
+                                        });
+                                        break;
                                     }
                                 }
-                            })
-                            .setNegativeButton("取消", null)
-                            .create();
+                            }).setNegativeButton("取消", null).create();
                     dialog.show();
 					
 				}else if(p1==exit){
-                    
-					AlertDialog dialog=new AlertDialog.Builder(BoatActivity.this)
-						.setTitle(getStr(R.string.tip))
-						.setMessage(getStr(R.string.sureExit))
-						.setPositiveButton(getStr(R.string.ok), new DialogInterface.OnClickListener() {
-
-							@Override
-							public void onClick(DialogInterface dia, int which) {
+					AlertDialog dialog=new AlertDialog.Builder(BoatActivity.this).setTitle(getStr(R.string.tip)).setMessage(getStr(R.string.sureExit)).setPositiveButton(getStr(R.string.ok), new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dia, int which) {
                                 System.exit(0);
 							}
-						})
-						.setNegativeButton(getStr(R.string.cancle), null)
-						.create();
+						}).setNegativeButton(getStr(R.string.cancle), null).create();
 					dialog.show();
 				}else if(p1==command){
                     List<String[]> clist=getCommandAndNames();
                     if(clist!=null){
                         final String[] items=clist.get(0);
                         final String[] comms=clist.get(1);
-                        AlertDialog dialog=new AlertDialog.Builder(BoatActivity.this)
-                            .setTitle("快捷命令菜单")
-                            .setItems(items, new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dia, int which) {
-                                    input(comms[which]);
-                                }
-                            })
-                            .setNeutralButton("删除", new DialogInterface.OnClickListener(){
+                        AlertDialog dialog=new AlertDialog.Builder(BoatActivity.this).setTitle("快捷命令菜单").setItems(items, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dia, int which) {
+                                input(comms[which]);
+                            }
+                        }).setNeutralButton("删除", new DialogInterface.OnClickListener(){
                                 @Override
                                 public void onClick(DialogInterface p1, int p2) {
-                                    AlertDialog dialog=new AlertDialog.Builder(BoatActivity.this)
-                                        .setTitle("删除命令")
-                                        .setItems(items, new DialogInterface.OnClickListener() {
-
+                                    AlertDialog dialog=new AlertDialog.Builder(BoatActivity.this).setTitle("删除命令").setItems(items, new DialogInterface.OnClickListener() {
                                             @Override
                                             public void onClick(DialogInterface dia, int which) {
                                                 try {
@@ -780,12 +747,9 @@ public class BoatActivity extends Activity implements TextureView.SurfaceTexture
                                         .create();
                                     dialog.show();
                                 }
-                            })
-                            .setPositiveButton("关闭菜单", null)
-                            .create();
+                            }).setPositiveButton("关闭菜单", null).create();
                         dialog.show();
                     }
-                    
                 }else if(p1==commandSetting){
                     final LinearLayout add_command=(LinearLayout)LayoutInflater.from(BoatActivity.this).inflate(R.layout.alert_add_command,null);
                     new AlertDialog.Builder(BoatActivity.this)
