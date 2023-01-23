@@ -13,16 +13,11 @@ import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
-
 import android.os.Environment;
 import android.provider.Settings;
-import android.util.Log;
-import android.widget.Space;
 import android.widget.Toast;
-
 import java.io.File;
 import java.io.IOException;
-
 import cosine.boat.LauncherConfig;
 
 /**

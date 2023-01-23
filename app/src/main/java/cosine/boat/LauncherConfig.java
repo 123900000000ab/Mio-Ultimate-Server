@@ -1,13 +1,9 @@
 package cosine.boat;
 
 import java.util.HashMap;
-import com.google.gson.Gson;
-import com.google.gson.JsonSyntaxException;
 import java.io.UnsupportedEncodingException;
 import android.util.Log;
-import com.google.gson.JsonParser;
-import com.google.gson.JsonObject;
-import com.google.gson.GsonBuilder;
+import com.google.gson.*;
 
 public class LauncherConfig extends HashMap<String, String>{
 	private static String path;

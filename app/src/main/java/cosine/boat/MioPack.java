@@ -13,32 +13,19 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
-import android.widget.Button;
-import android.widget.ImageButton;
-import android.widget.ListView;
-import android.widget.PopupWindow;
+import android.widget.*;
 import android.widget.RelativeLayout.LayoutParams;
-import android.widget.TextView;
-import android.widget.Toast;
 import com.chenzy.owloading.OWLoadingView;
-import java.io.BufferedInputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
-
 import com.mio.launcher.MioInfo;
 import com.mio.launcher.R;
 import com.leon.lfilepickerlibrary.LFilePicker;
 import com.mio.launcher.MioUtils;
 import com.mio.launcher.MioLogin;
-import com.mio.launcher.Splash;
 
 public class MioPack extends Activity {
 	ListView mio_left,mio_right;

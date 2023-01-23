@@ -7,10 +7,7 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
-
-import com.mio.launcher.MioInfo;
-import com.mio.launcher.R;
-import com.mio.launcher.ShellServer;
+import com.mio.launcher.*;
 
 import java.io.File;
 
