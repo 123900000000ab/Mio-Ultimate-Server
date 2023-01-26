@@ -13,17 +13,17 @@ import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
-import android.os.Environment;
+import android.os.*;
 import android.provider.Settings;
 import android.widget.Toast;
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import cosine.boat.LauncherConfig;
 
 /**
  * @author mio
- */
+**/
 public class Splash extends Activity {
+	private Handler handler;
 	@RequiresApi(api = Build.VERSION_CODES.M)
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -82,44 +82,35 @@ public class Splash extends Activity {
 		}
 	}
 	private void fileCheck(){
-		new Thread(()->{
+		handler = new Handler();
+		new Thread(() -> {
 			MioInfo.initializeMioInfo(Splash.this);
-			File runtime= new File(MioInfo.DIR_DATA,"app_runtime");
-			File config1= new File(MioInfo.defaultMioLauncherDir_Public,"MioConfig.json");
-			File profile= new File(MioInfo.defaultGameDir_Public,"launcher_profiles.json");
-			File busybox=new File(runtime,"busybox");
-			File gamedir=new File(MioInfo.DIR_GAMEDIR_JSON);
-//			File caciacavallo=new File(MioInfo.DIR_DATA,"caciacavallo");
+			File runtime = new File(MioInfo.DIR_DATA,"app_runtime");
+			File config1 = new File(MioInfo.defaultMioLauncherDir_Public,"MioConfig.json");
+			File busybox = new File(runtime,"busybox");
+			//File caciacavallo=new File(MioInfo.DIR_DATA,"caciacavallo");
 			if ((!new File(MioInfo.jre8Dir).exists()  || !new File(MioInfo.runtimeDir + "/version").exists())){
 				toast("正在安装运行库。");
 				MioUtils.copyFilesFromAssets(Splash.this,"app_runtime",runtime.getAbsolutePath());
-				toast("安装完毕。");
-			}
-			if(!busybox.exists()){
+				MioUtils.copyFilesFromAssets(Splash.this,"gamedir.json",new File(MioInfo.DIR_GAMEDIR_JSON).getAbsolutePath());
+				MioUtils.copyFilesFromAssets(Splash.this,"MioConfig.json",config1.getAbsolutePath());
+				MioUtils.copyFilesFromAssets(Splash.this,"launcher_profiles.json",new File(MioInfo.defaultGameDir_Public,"launcher_profiles.json").getAbsolutePath());
 				MioUtils.copyFilesFromAssets(Splash.this,"app_runtime/busybox",busybox.getAbsolutePath());
 				busybox.setExecutable(true);
-			}
-			if (!gamedir.exists()){
-				MioUtils.copyFilesFromAssets(Splash.this,"gamedir.json",gamedir.getAbsolutePath());
-			}
-			if (!config1.exists()){
-				MioUtils.copyFilesFromAssets(Splash.this,"MioConfig.json",config1.getAbsolutePath());
-			}
-			if (!profile.exists()){
-				MioUtils.copyFilesFromAssets(Splash.this,"launcher_profiles.json",profile.getAbsolutePath());
+				toast("安装完毕。");
 			}
 			MioInfo.config=LauncherConfig.fromFile(config1.getAbsolutePath());
-			try {
-				Thread.sleep(2000);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-			runOnUiThread(()->{
-				startActivity(new Intent(Splash.this,MioLauncher.class));
-				finish();
-			});
+			handler.post(runnableUi);
 		}).start();
 	}
+	Runnable runnableUi = new Runnable(){
+		@Override
+		public void run() {
+			//在这里写更新UI的操作
+			startActivity(new Intent(Splash.this,MioLauncher.class));
+			finish();
+		}
+	};
 	private void toast(String s){
 		runOnUiThread(()-> Toast.makeText(this, s, Toast.LENGTH_SHORT).show());
 	}
