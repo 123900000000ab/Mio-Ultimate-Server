@@ -144,12 +144,12 @@ public class LoadMe {
                 args.add("-Dfml.earlyprogresswindow=false");
             }
             //java参数
-            args.add("-Djava.io.tmpdir=/data/data/com.mio.launcher/cache");
+            args.add("-Djava.io.tmpdir=" + MioInfo.cacheDir);
             //args.add("-Duser.home=null");
             args.add("-Dminecraft.launcher.brand=MioPro");
             args.add("-Dfml.ignoreInvalidMinecraftCertificates=true");
             args.add("-Dfml.ignorePatchDiscrepancies=true");
-            args.add("-Djava.home=" + runtimePath +"/j2re-image");
+            args.add("-Djava.home=" + MioInfo.jre8Dir);
             args.add("-Duser.language=zh");
             args.add("-Duser.country=CN");
             args.add("-Dnet.minecraft.clientmodname=Mio-Ultimate");

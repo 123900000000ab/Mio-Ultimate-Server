@@ -20,12 +20,15 @@ public class MioInfo {
     public static String DIR_DATA;
     //运行库解压后所在目录
     public static String runtimeDir;
+    //cache目录位置
+    public static String cacheDir;
     //JRE8目录
     public static String jre8Dir;
     public static void initializeMioInfo (Context context){
         DIR_DATA = context.getFilesDir().getAbsolutePath().replace("/files","");
         runtimeDir = context.getDir("runtime",Context.MODE_PRIVATE).getAbsolutePath();
         jre8Dir = runtimeDir + "/j2re-image";
+        cacheDir = context.getCacheDir().getAbsolutePath();
     }
     public static void setPath(String s){
         defaultMioLauncherDir_Public = Environment.getExternalStorageDirectory() + "/MioLauncher";

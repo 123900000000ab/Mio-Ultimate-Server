@@ -454,16 +454,16 @@ public class MioLauncher extends AppCompatActivity implements OnClickListener {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
                     try {
-                        new File("/data/data/com.mio.launcher/app_runtime/j2re-image", "8").createNewFile();
+                        new File(MioInfo.jre8Dir, "8").createNewFile();
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
                 } else {
-                    new File("/data/data/com.mio.launcher/app_runtime/j2re-image", "8").delete();
+                    new File(MioInfo.jre8Dir, "8").delete();
                 }
             }
         });
-        layout_settingCheckBoxCaci.setChecked(new File("/data/data/com.mio.launcher/app_runtime/j2re-image", "8").exists());
+        layout_settingCheckBoxCaci.setChecked(new File(MioInfo.jre8Dir, "8").exists());
         layout_settingButtonToCmd = findViewById(R.id.layout_settingButtonToCmd);
         layout_settingButtonToCmd.setOnClickListener(new OnClickListener() {
             @Override

@@ -8,7 +8,7 @@ public class ShellServer extends Thread
     private Process process;
     private BufferedReader output;
     private Callback callback;
-    String runtimePath = "/data/data/com.mio.launcher/app_runtime/j2re-image";
+    String runtimePath = MioInfo.jre8Dir;
 
     public ShellServer(Callback callback, String shell, String home){
         this.callback = callback;
