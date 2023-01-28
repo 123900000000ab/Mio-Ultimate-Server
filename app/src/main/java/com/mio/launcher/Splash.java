@@ -71,9 +71,6 @@ public class Splash extends Activity {
 	}
 	public void init(){
 		new File(MioInfo.DIR_VERSIONS).mkdirs();
-		new File(MioInfo.DIR_LIBRARIES).mkdirs();
-		new File(MioInfo.DIR_INDEXES).mkdirs();
-		new File(MioInfo.DIR_OBJECTS).mkdirs();
 		new File(MioInfo.DIR_TEMP,"version_manifest.json");
 		try {
 			new File(MioInfo.defaultMioLauncherDir_Public,".nomedia").createNewFile();
