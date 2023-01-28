@@ -316,7 +316,7 @@ public class MioLauncher extends AppCompatActivity implements OnClickListener {
         startGame_choose = findViewById(R.id.activity_main_choose_version);
         List<String> gamelist = new ArrayList<>();
         String[] versions = new File(MioInfo.DIR_VERSIONS).list();
-        if (versions.length != 0) {
+        if (versions != null && versions.length != 0) {
             for (String s : versions) {
                 gamelist.add(s);
             }

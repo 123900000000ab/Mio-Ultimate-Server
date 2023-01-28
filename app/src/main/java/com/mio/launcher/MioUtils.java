@@ -331,6 +331,16 @@ public class MioUtils {
         }
         return hexString.toUpperCase();
     }
-
-    
+    //创建目录
+    public static void createDirectory(String path){
+        if (!new File(path).exists()){
+            new File(path).mkdirs();
+        }
+    }
+    //创建文件
+    public static void createFile(String path) throws IOException {
+        if (!new File(path).exists()){
+            new File(path).createNewFile();
+        }
+    }
 }

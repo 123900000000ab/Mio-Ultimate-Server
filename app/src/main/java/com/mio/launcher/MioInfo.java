@@ -25,6 +25,8 @@ public class MioInfo {
     //JRE8目录
     public static String jre8Dir;
     public static void initializeMioInfo (Context context){
+        MioUtils.createDirectory(defaultMioLauncherDir_Public);
+        MioUtils.createDirectory(defaultGameDir_Public);
         DIR_DATA = context.getFilesDir().getAbsolutePath().replace("/files","");
         runtimeDir = context.getDir("runtime",Context.MODE_PRIVATE).getAbsolutePath();
         jre8Dir = runtimeDir + "/j2re-image";

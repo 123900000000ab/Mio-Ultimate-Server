@@ -70,6 +70,7 @@ public class Splash extends Activity {
 		}
 	}
 	public void init(){
+		/**
 		new File(MioInfo.DIR_VERSIONS).mkdirs();
 		new File(MioInfo.DIR_TEMP,"version_manifest.json");
 		try {
@@ -77,6 +78,7 @@ public class Splash extends Activity {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		**/
 	}
 	private void fileCheck(){
 		handler = new Handler();
