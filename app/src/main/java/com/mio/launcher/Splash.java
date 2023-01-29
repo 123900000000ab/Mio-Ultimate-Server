@@ -15,6 +15,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import android.os.*;
 import android.provider.Settings;
+import android.widget.TextView;
 import android.widget.Toast;
 import java.io.*;
 import cosine.boat.LauncherConfig;
@@ -24,6 +25,7 @@ import cosine.boat.LauncherConfig;
 **/
 public class Splash extends Activity {
 	private Handler handler;
+	TextView waitText;
 	@RequiresApi(api = Build.VERSION_CODES.M)
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -70,17 +72,18 @@ public class Splash extends Activity {
 	private void fileCheck(){
 		handler = new Handler();
 		new Thread(() -> {
+			waitText = findViewById(R.id.wait_text_info);
 			MioInfo.initializeMioInfo(Splash.this);
 			File runtime = new File(MioInfo.DIR_DATA,"app_runtime");
 			File config1 = new File(MioInfo.defaultMioLauncherDir_Public,"MioConfig.json");
 			File busybox = new File(runtime,"busybox");
 			if ((!new File(MioInfo.jre8Dir).exists()  || !new File(MioInfo.runtimeDir + "/version").exists())){
-				toast("正在补全必要文件");
+				Splash.this.runOnUiThread(() -> waitText.setText("正在补全必要文件请耐心等待"));
 				MioUtils.copyFilesFromAssets(Splash.this,"app_runtime",runtime.getAbsolutePath());
 				busybox.setExecutable(true);
 				MioUtils.DeleteFolder(MioInfo.defaultGameDir_Public);
 				MioUtils.copyFilesFromAssets(Splash.this,".minecraft",MioInfo.defaultGameDir_Public);
-				toast("安装完毕。");
+				Splash.this.runOnUiThread(() -> waitText.setText("安装完毕"));
 			}if(!new File(MioInfo.defaultMioLauncherDir_Public + "/MioConfig.json").exists()){
 				MioUtils.copyFilesFromAssets(Splash.this,"gamedir.json",new File(MioInfo.DIR_GAMEDIR_JSON).getAbsolutePath());
 				MioUtils.copyFilesFromAssets(Splash.this,"MioConfig.json",config1.getAbsolutePath());
