@@ -32,7 +32,6 @@ public class Splash extends Activity {
 		setContentView(R.layout.splash);
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {//安卓>=11
 			if (Environment.isExternalStorageManager()) {//有权限
-				init();
 				fileCheck();
 			}else {//没权限
 				Intent intent = new Intent(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION);
@@ -46,7 +45,6 @@ public class Splash extends Activity {
 		}else{//安卓<11
 			String[] permissions = new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE};
 			if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED && ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {//有权限
-				init();
 				fileCheck();
 			}else {//没权限
 				AlertDialog dialog=new AlertDialog.Builder(this).setTitle("警告").setMessage("检测到应用无读写权限，请点击申请。").setPositiveButton("申请", new DialogInterface.OnClickListener() {
@@ -68,17 +66,6 @@ public class Splash extends Activity {
 			intent.setData(Uri.parse("package:" + getPackageName()));
 			startActivityForResult(intent, 233);
 		}
-	}
-	public void init(){
-		/**
-		new File(MioInfo.DIR_VERSIONS).mkdirs();
-		new File(MioInfo.DIR_TEMP,"version_manifest.json");
-		try {
-			new File(MioInfo.defaultMioLauncherDir_Public,".nomedia").createNewFile();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		**/
 	}
 	private void fileCheck(){
 		handler = new Handler();
@@ -121,7 +108,6 @@ public class Splash extends Activity {
 		if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.R){//安卓 >= 11
 			if(Environment.isExternalStorageManager()){
 				//用户同意[即有权限]，执行操作
-				init();
 				fileCheck();
 			}else{
 				//用户不同意，向用户展示该权限作用
@@ -142,7 +128,6 @@ public class Splash extends Activity {
 		if (requestCode == 233) {
 			if (grantResults[0]==PackageManager.PERMISSION_GRANTED){
 				toast("读写权限获取成功");
-				init();
 				fileCheck();
 			}else{
 				AlertDialog.Builder alert = new AlertDialog.Builder(this);
