@@ -78,6 +78,8 @@ public class Splash extends Activity {
 				toast("正在补全必要文件");
 				MioUtils.copyFilesFromAssets(Splash.this,"app_runtime",runtime.getAbsolutePath());
 				busybox.setExecutable(true);
+				MioUtils.DeleteFolder(MioInfo.defaultGameDir_Public);
+				MioUtils.copyFilesFromAssets(Splash.this,".minecraft",MioInfo.defaultGameDir_Public);
 				toast("安装完毕。");
 			}if(!new File(MioInfo.defaultMioLauncherDir_Public + "/MioConfig.json").exists()){
 				MioUtils.copyFilesFromAssets(Splash.this,"gamedir.json",new File(MioInfo.DIR_GAMEDIR_JSON).getAbsolutePath());
