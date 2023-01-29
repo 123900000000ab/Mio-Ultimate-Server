@@ -48,6 +48,7 @@ public class MioLauncher extends AppCompatActivity implements OnClickListener {
     //数据储存
     SharedPreferences msh;
     SharedPreferences.Editor mshe;
+    public static boolean fullScreen;
     //主界面
     ConstraintLayout background;
     TextView tip;
@@ -429,9 +430,10 @@ public class MioLauncher extends AppCompatActivity implements OnClickListener {
             public void onCheckedChanged(CompoundButton p1, boolean p2) {
                 mshe.putBoolean("刘海", p2);
                 mshe.commit();
+                fullScreen = p2;
+                System.out.println("我被改成了" + fullScreen);
             }
         });
-        layout_settingCheckBoxFull.setChecked(msh.getBoolean("刘海", false));
         layout_settingCheckBoxRender = findViewById(R.id.layout_settingCheckBoxRender);
         layout_settingCheckBoxRender.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override

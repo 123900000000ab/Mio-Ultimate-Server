@@ -129,7 +129,7 @@ public class BoatActivity extends Activity implements TextureView.SurfaceTexture
 		super.onCreate(savedInstanceState);
         base = (DrawerLayout) LayoutInflater.from(BoatActivity.this).inflate(R.layout.mio_overlay,null);
 		setContentView(base);
-
+        MioUtils.hideBottomMenu(this,MioLauncher.fullScreen);
         overlay=base.findViewById(R.id.overlayRelativeLayout);
         miosurface=overlay.findViewById(R.id.miosurface);
 		miosurface.setSurfaceTextureListener(this);
@@ -1751,14 +1751,6 @@ public class BoatActivity extends Activity implements TextureView.SurfaceTexture
             return false;
         }
     };
-	@Override
-	public void onWindowFocusChanged(boolean hasFocus) {
-		// TODO: Implement this method
-		super.onWindowFocusChanged(hasFocus);
-		if (hasFocus){
-			MioUtils.hideBottomMenu(this,msh.getBoolean("刘海",false));
-		}
-	}
     private List<String[]> getCommandAndNames(){
         try {
             String commands_str=msh.getString("命令","");
