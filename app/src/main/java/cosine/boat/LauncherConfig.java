@@ -21,11 +21,7 @@ public class LauncherConfig extends HashMap<String, String>{
 		try {
 			return new Gson().fromJson(new String(Utils.readFile(filePath), "UTF-8"), LauncherConfig.class);
 
-		}catch (JsonSyntaxException e) {
-			e.printStackTrace();
-			return null;
-		}
-		catch (UnsupportedEncodingException e){
+		}catch (JsonSyntaxException | UnsupportedEncodingException e) {
 			e.printStackTrace();
 			return null;
 		}
