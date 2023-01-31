@@ -45,7 +45,7 @@ public class Splash extends Activity {
 				startActivityForResult(intent, 233);
 			}
 		}else{//安卓<11
-			String[] permissions = new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE};
+			String[] permissions = new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE,Manifest.permission.READ_EXTERNAL_STORAGE};
 			if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED && ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {//有权限
 				fileCheck();
 			}else {//没权限
