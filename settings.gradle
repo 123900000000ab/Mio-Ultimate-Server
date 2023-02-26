@@ -1,4 +1,4 @@
-rootProject.name = "澪-Ultimate"
+rootProject.name = "澪-Ultimate_Server"
 include ':app'
 include ':MioCustom'
 include ':lfilepickerlibrary'
