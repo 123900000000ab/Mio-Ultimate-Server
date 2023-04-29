@@ -1098,7 +1098,7 @@ public class MioLauncher extends AppCompatActivity implements OnClickListener {
             if (layout_plugin_text_state_installer.getText().equals("未安装")) {
                 Intent intent = new Intent();
                 intent.setAction("android.intent.action.VIEW");
-                Uri content_url = Uri.parse("https://wwi.lanzoui.com/iIoUZr7q0di");
+                Uri content_url = Uri.parse("https://icraft.ren:90/titles/Mio-Installer-0.1.apk");
                 intent.setData(content_url);
                 startActivity(intent);
             } else {
