@@ -1110,10 +1110,6 @@ public class BoatActivity extends Activity implements TextureView.SurfaceTexture
                             }
                             baseX += ((int)p2.getX() -initialX);
                             baseY += ((int)p2.getY() - initialY);
-                            Log.e("initX",initialX+"");
-                            Log.e("initY",initialY+"");
-                            Log.e("X",(int)p2.getX()+"");
-                            Log.e("Y",(int)p2.getY()+"");
                             BoatInput.setPointer(baseX,baseY);
                             mouseCursor.setX(baseX);
                             mouseCursor.setY(baseY);
