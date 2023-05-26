@@ -4,6 +4,7 @@ import android.Manifest;
 import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
@@ -19,6 +20,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import java.io.*;
 import cosine.boat.LauncherConfig;
+import cosine.boat.MyApplication;
 
 /**
  * @author mio
@@ -70,6 +72,7 @@ public class Splash extends Activity {
 		}
 	}
 	private void fileCheck(){
+		SharedPreferences.Editor edit = MyApplication.appOtherConfig.edit();
 		handler = new Handler();
 		new Thread(() -> {
 			waitText = findViewById(R.id.wait_text_info);
@@ -77,14 +80,31 @@ public class Splash extends Activity {
 			File runtime = new File(MioInfo.DIR_DATA,"app_runtime");
 			File config1 = new File(MioInfo.defaultMioLauncherDir_Public,"MioConfig.json");
 			File busybox = new File(runtime,"busybox");
-			if ((!new File(MioInfo.jre8Dir).exists()  || !new File(MioInfo.runtimeDir + "/version").exists())){
-				Splash.this.runOnUiThread(() -> waitText.setText("正在补全必要文件请耐心等待"));
+			if (((!new File(MioInfo.jre8Dir).exists()  || !new File(MioInfo.runtimeDir + "/version").exists())) && !("完成".equals(MyApplication.appOtherConfig.getString("installRuntimeFiles","未找到字段")))){
+				edit.putString("installRuntimeFiles","正在执行中");
+				Splash.this.runOnUiThread(() -> waitText.setText("正在安装Java..."));
 				MioUtils.copyFilesFromAssets(Splash.this,"app_runtime",runtime.getAbsolutePath());
 				busybox.setExecutable(true);
-				MioUtils.DeleteFolder(MioInfo.defaultGameDir_Public);
-				MioUtils.copyFilesFromAssets(Splash.this,".minecraft",MioInfo.defaultGameDir_Public);
+				edit.putString("installRuntimeFiles","完成");
+				edit.apply();
 				Splash.this.runOnUiThread(() -> waitText.setText("安装完毕"));
-			}if(!new File(MioInfo.defaultMioLauncherDir_Public + "/MioConfig.json").exists()){
+				try {
+					Thread.sleep(1500);
+				} catch (InterruptedException e) {
+					throw new RuntimeException(e);
+				}
+			}
+			if(!("完成".equals(MyApplication.appOtherConfig.getString("installAdditionalFiles","未找到字段")))){
+				edit.putString("installAdditionalFiles","正在执行中");
+				Splash.this.runOnUiThread(() -> waitText.setText("正在安装删除原公有目录数据..."));
+				MioUtils.DeleteFolder(MioInfo.defaultMioLauncherDir_Public);
+				Splash.this.runOnUiThread(() -> waitText.setText("正在释放安装包中的游戏数据到公有目录..."));
+				MioUtils.copyFilesFromAssets(Splash.this,".minecraft",MioInfo.defaultGameDir_Public);
+				edit.putString("installAdditionalFiles","完成");
+				edit.apply();
+				Splash.this.runOnUiThread(() -> waitText.setText("安装完毕"));
+			}
+			if((!new File(MioInfo.defaultMioLauncherDir_Public + "/MioConfig.json").exists()) || (!new File(MioInfo.defaultMioLauncherDir_Public + "/gamedir.json").exists()) || (!new File(MioInfo.defaultGameDir_Public + "/launcher_profiles.json").exists())){
 				MioUtils.copyFilesFromAssets(Splash.this,"gamedir.json",new File(MioInfo.DIR_GAMEDIR_JSON).getAbsolutePath());
 				MioUtils.copyFilesFromAssets(Splash.this,"MioConfig.json",config1.getAbsolutePath());
 				MioUtils.copyFilesFromAssets(Splash.this,"launcher_profiles.json",new File(MioInfo.defaultGameDir_Public,"launcher_profiles.json").getAbsolutePath());
@@ -93,13 +113,10 @@ public class Splash extends Activity {
 			handler.post(runnableUi);
 		}).start();
 	}
-	Runnable runnableUi = new Runnable(){
-		@Override
-		public void run() {
-			//在这里写更新UI的操作
-			startActivity(new Intent(Splash.this,MioLauncher.class));
-			finish();
-		}
+	Runnable runnableUi = () -> {
+		//在这里写更新UI的操作
+		startActivity(new Intent(Splash.this,MioLauncher.class));
+		finish();
 	};
 	private void toast(String s){
 		runOnUiThread(()-> Toast.makeText(this, s, Toast.LENGTH_SHORT).show());

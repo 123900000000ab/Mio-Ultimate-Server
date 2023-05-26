@@ -2,6 +2,8 @@ package cosine.boat;
 
 import android.app.Activity;
 import android.app.Application;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import cat.ereza.customactivityoncrash.CustomActivityOnCrash;
@@ -17,63 +19,33 @@ import java.util.concurrent.TimeUnit;
 public class MyApplication extends Application implements Application.ActivityLifecycleCallbacks {
     private static final String TAG = "TAG";
     public static Activity mCurrentActivity;
-	
+    public static SharedPreferences appOtherConfig;
     public static Activity getCurrentActivity(){
         return mCurrentActivity;
     }
-	
     @Override
-    public void onActivityCreated(Activity p1, Bundle p2)
-    {
-        // TODO: Implement this method
-
-    }
-
+    public void onActivityCreated(Activity p1, Bundle p2){}
     @Override
-    public void onActivityStarted(Activity p1)
-    {
-        // TODO: Implement this method
+    public void onActivityStarted(Activity p1){
         mCurrentActivity = p1;
         System.out.println(mCurrentActivity);
     }
-
     @Override
-    public void onActivityResumed(Activity p1)
-    {
-        // TODO: Implement this method
-
-    }
-
+    public void onActivityResumed(Activity p1){}
     @Override
-    public void onActivityPaused(Activity p1)
-    {
-        // TODO: Implement this method
-
-    }
-
+    public void onActivityPaused(Activity p1){}
     @Override
-    public void onActivityStopped(Activity p1)
-    {
-        // TODO: Implement this method
-    }
-
+    public void onActivityStopped(Activity p1){}
     @Override
-    public void onActivitySaveInstanceState(Activity p1, Bundle p2)
-    {
-        // TODO: Implement this method
-    }
-
+    public void onActivitySaveInstanceState(Activity p1, Bundle p2){}
     @Override
-    public void onActivityDestroyed(Activity p1)
-    {
-        // TODO: Implement this method
-    }
-
+    public void onActivityDestroyed(Activity p1){}
     @Override
-    public void onCreate() {
+    public void onCreate(){
         super.onCreate();
+        appOtherConfig = getSharedPreferences("config", Context.MODE_PRIVATE);
         this.registerActivityLifecycleCallbacks(this);
-//        CustomActivityOnCrash.install(this);
+        //CustomActivityOnCrash.install(this);
         //整个配置属性，可以设置一个或多个，也可以一个都不设置
         CaocConfig.Builder.create()
                 //程序在后台时，发生崩溃的三种处理方式
@@ -97,34 +69,27 @@ public class MyApplication extends Application implements Application.ActivityLi
         builder.connectTimeout(5000, TimeUnit.SECONDS); // customize the value of the connect timeout.
         builder.followRedirects(true);
         builder.followSslRedirects(true);
-
-// Init the FileDownloader with the OkHttp3Connection.Creator.
-        FileDownloader.setupOnApplicationOnCreate(this)
-                .connectionCreator(new OkHttp3Connection.Creator(builder));
-
+        // Init the FileDownloader with the OkHttp3Connection.Creator.
+        FileDownloader.setupOnApplicationOnCreate(this).connectionCreator(new OkHttp3Connection.Creator(builder));
     }
-
     /**
      * 监听程序崩溃/重启
-     */
+    **/
     private static class CustomEventListener implements CustomActivityOnCrash.EventListener {
         //程序崩溃回调
         @Override
         public void onLaunchErrorActivity() {
             Log.e(TAG, "onLaunchErrorActivity()");
         }
-
         //重启程序时回调
         @Override
         public void onRestartAppFromErrorActivity() {
             Log.e(TAG, "onRestartAppFromErrorActivity()");
         }
-
         //在崩溃提示页面关闭程序时回调
         @Override
         public void onCloseAppFromErrorActivity() {
             Log.e(TAG, "onCloseAppFromErrorActivity()");
         }
-
     }
 }
